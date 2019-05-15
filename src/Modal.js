@@ -170,6 +170,8 @@ class Modal extends React.Component {
         style={dialog}
         className={cn(className, prefix, { in: props.show && !transition })}
         onClick={this.props.backdrop ? e => this.handleBackdropClick(e) : null}
+        onMouseDown={this.props.backdrop ? e => this.handleBackdropMouseDown(e) : null}
+        onMouseUp={this.props.backdrop ? e => this.handleBackdropMouseUp(e) : null}
       >
         <div
           key='modal'
@@ -234,11 +236,26 @@ class Modal extends React.Component {
 
 
   handleBackdropClick(e) {
-    if (e.target !== e.currentTarget) return;
+    if (this._ignoreBackdropClick || e.target !== e.currentTarget) {
+      this._ignoreBackdropClick = false;
+      return;
+    }
     if (this.props.backdrop === 'static')
       return this.attention()
 
     this.props.onHide();
+  }
+
+  handleBackdropMouseDown(e) {
+    this._waitingForMouseUp = true;
+    this._mouseDownTarget = e.target;
+  }
+
+  handleBackdropMouseUp(e) {
+    if (this._waitingForMouseUp && e.target === this.dialog && this._mouseDownTarget !== this.dialog) {
+      this._ignoreBackdropClick = true;
+    }
+    this._waitingForMouseUp = false;
   }
 
   _show() {
