@@ -151,6 +151,7 @@ class Modal extends React.Component {
       , container
       , onEnter, onEntered
       , onExit, onExited
+      , enforceFocus
       , ...props } = this.props
 
     let { dialog, classes, backdrop } = this.state;
@@ -213,6 +214,7 @@ class Modal extends React.Component {
         onExit={onExit}
         onExiting={this.handleExiting}
         onExited={onExited}
+        enforceFocus={enforceFocus}
       >
         {modal}
       </BaseModal>
